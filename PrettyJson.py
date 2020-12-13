@@ -81,6 +81,15 @@ class PrettyJsonBaseCommand:
         line_separator = s.get("line_separator", ",")
         value_separator = s.get("value_separator", ": ")
 
+        # Force sort obj value
+        if sort_keys:
+            for k, v in obj.items():
+                if isinstance(v, (list, tuple, set)):
+                    try:
+                        obj[k] = sorted(v)
+                    except Exception as e:
+                        pass
+
         output_json = json.dumps(
             obj,
             indent=s.get("indent", 2),
