@@ -3,6 +3,7 @@ import os
 import re
 import subprocess
 import sys
+import ast
 from xml.dom import minidom
 from xml.etree import ElementTree
 
@@ -249,7 +250,10 @@ class PrettyJsonCommand(PrettyJsonBaseCommand, sublime_plugin.TextCommand):
 
             try:
                 selection_text = self.view.substr(selection)
-                obj = self.json_loads(selection_text)
+                try:
+                    obj = ast.literal_eval(selection_text)
+                except Exception as e:
+                    obj = self.json_loads(selection_text)
                 self.view.replace(edit, selection, self.json_dumps(obj))
 
                 if selected_entire_file:
